@@ -1,0 +1,14 @@
+[Unit]
+Description=service to start RTMP Test Signal
+After=network.target
+
+[Service]
+User=pi
+Type=simple
+Restart=always
+RestartSec=1s
+WorkingDirectory=/home/pi/
+ExecStart=/bin/sh -c 'raspivid -o - -t 0 -w 1280 -h 720 -fps 30 -b 3000000 -g 60 | ffmpeg -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i /dev/zero -f h264 -i - -vcodec copy -acodec aac -ab 20k -g 60 -strict experimental -f flv rtmp://127.0.0.1:1935/raspberrypi'
+
+[Install]
+WantedBy=default.target
